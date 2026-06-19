@@ -384,7 +384,7 @@ rec {
       upstreamWants,
       packages ? cfg.packages,
       package ? cfg.package,
-    }:
+    }@args:
     let
       typeDir =
         {
@@ -396,10 +396,10 @@ rec {
         .${type};
     in
     pkgs.runCommand "${type}-units"
-      {
+      (builtins.trace (builtins.toJSON args) {
         preferLocalBuild = true;
         allowSubstitutes = false;
-      }
+      })
       ''
         mkdir -p $out
 
