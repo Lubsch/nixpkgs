@@ -638,12 +638,19 @@ in
 
       in
       {
-        "systemd/system".source = generateUnits (lib.traceValFn builtins.toJSON {
+        "system-units-args".text = builtins.toJSON {
           type = "system";
           units = enabledUnits;
           upstreamUnits = enabledUpstreamSystemUnits;
           upstreamWants = upstreamSystemWants;
-        });
+        };
+
+        "systemd/system".source = generateUnits {
+          type = "system";
+          units = enabledUnits;
+          upstreamUnits = enabledUpstreamSystemUnits;
+          upstreamWants = upstreamSystemWants;
+        };
 
         "systemd/system.conf".text = settingsToSections cfg.settings;
 
