@@ -643,6 +643,7 @@ in
           units = enabledUnits;
           upstreamUnits = enabledUpstreamSystemUnits;
           upstreamWants = upstreamSystemWants;
+          inherit (config.systemd) packages package;
         };
 
         "systemd/system".source = generateUnits {
