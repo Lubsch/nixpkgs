@@ -720,23 +720,12 @@ let
       # a module will resolve strictly the attributes used as argument but
       # not their values.  The values are forwarding the result of the
       # evaluation of the option.
-      context = name: ''while evaluating the module argument `${name}' in "${key}":'';
-      extraArgs = mapAttrs (
-        name: _:
-        addErrorContext (context name) (
-          args.${name} or (addErrorContext
-            "noting that argument `${name}` is not externally provided, so querying `_module.args` instead, requiring `config`"
-            config._module.args.${name}
-          )
-        )
-      ) (functionArgs f);
-
-      # Note: we append in the opposite order such that we can add an error
-      # context on the explicit arguments of "args" too. This update
-      # operator is used to make the "args@{ ... }: with args.lib;" notation
-      # works.
+      fnArgs = functionArgs f;
     in
-    f (args // extraArgs);
+    if fnArgs == { } then
+      f args
+    else
+      f (args // mapAttrs (name: _: args.${name} or config._module.args.${name}) fnArgs);
 
   /**
     Merge a list of modules.  This will recurse over the option
